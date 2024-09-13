@@ -15,7 +15,7 @@ app.use(limiter);
 
 const DOCKER_PASSWORD = process.env.DOCKER_PASSWORD
 
-const COMMAND = `echo ${DOCKER_PASSWORD} | docker login --username squizy --password-stdin && docker rm bios-uin -f && docker pull squizy/bios-test:latest && docker compose up --build -d`;
+const COMMAND = `echo ${DOCKER_PASSWORD} | docker login --username squizy --password-stdin && docker rm bios-uin -f && docker pull squizy/bios-test:latest && docker compose up -d`;
 
 app.post('/webhook', (req, res) => {
   console.log('webhook received');
