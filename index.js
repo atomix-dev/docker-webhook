@@ -19,7 +19,7 @@ app.post('/webhook', (req, res) => {
   const body = req.body;
   console.log(body);
 
-  if (!body || !body.tag) {
+  if (!body || !body.push_data) {
     console.log('no webhook payload');
     return res.status(400).send('Invalid webhook payload')
   }
