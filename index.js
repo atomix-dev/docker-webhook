@@ -15,14 +15,7 @@ app.use(limiter);
 
 const DOCKER_PASSWORD = process.env.DOCKER_PASSWORD
 
-const COMMAND = `echo ${DOCKER_PASSWORD} | docker login --username squizy --password-stdin && \
-if [ "$(docker ps -aq -f name=bios-uin)" ]; then \
-  echo "Container dengan nama bios-uin sudah ada. Menghentikan dan menghapus container lama..." \
-  docker stop bios-uin \
-  docker rm bios-uin \
-fi && \
-docker pull squizy/bios-test:latest && \
-docker run -d --rm --name bios-uin -p 8000:80 --env-file ./.env squizy/bios-test:latest`;
+const COMMAND = `echo ${DOCKER_PASSWORD} | docker login --username squizy --password-stdin && docker rm bios-uin -f && docker pull squizy/bios-test:latest && docker run -d --rm --name bios-uin -p 8000:80 --env-file ./.env squizy/bios-test:latest`;
 
 app.post('/webhook', (req, res) => {
   console.log('webhook received');
