@@ -1,6 +1,7 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const { exec } = require('child_process');
+require('dotenv').config()
 
 const app = express();
 
@@ -12,7 +13,9 @@ const limiter = rateLimit({
 app.use(express.json());
 app.use(limiter);
 
-const COMMAND = `echo $DOCKER_PASSWORD | docker login --username squizy --password-stdin && docker rm bios-uin -f && docker pull squizy/bios-test:latest && docker compose -d --build .`;
+const DOCKER_PASSWORD = process.env.DOCKER_PASSWORD
+
+const COMMAND = `echo ${DOCKER_PASSWORD} | docker login --username squizy --password-stdin && docker rm bios-uin -f && docker pull squizy/bios-test:latest && docker compose -d --build .`;
 
 app.post('/webhook', (req, res) => {
   console.log('webhook received');
