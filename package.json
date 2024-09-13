@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "dotenv": "^16.4.5",
     "expres": "^0.0.5",
     "express-rate-limit": "^7.4.0",
     "pm2": "^5.4.2"
