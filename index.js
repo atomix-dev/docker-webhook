@@ -12,14 +12,14 @@ const limiter = rateLimit({
 app.use(express.json());
 app.use(limiter);
 
-const COMMAND = `docker rm bios-uin -f && docker pull squizy/bios-test:latest && docker compose -d --build .`;
+const COMMAND = `echo $DOCKER_PASSWORD | docker login --username squizy --password-stdin && docker rm bios-uin -f && docker pull squizy/bios-test:latest && docker compose -d --build .`;
 
 app.post('/webhook', (req, res) => {
   console.log('webhook received');
   const body = req.body;
   console.log(body);
 
-  if(!body || !body.tag) {
+  if (!body || !body.tag) {
     console.log('no webhook payload');
     return res.status(400).send('Invalid webhook payload')
   }
