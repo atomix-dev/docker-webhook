@@ -10,7 +10,7 @@ app.use(json());
 
 const DOCKER_PASSWORD = process.env.DOCKER_PASSWORD;
 
-const COMMAND = `echo ${DOCKER_PASSWORD} | docker login --username squizy --password-stdin && docker rm bios-uin -f && docker pull squizy/bios-test:latest && docker run -d --rm --name bios-uin -p 8000:80 --env-file ./.env squizy/bios-test:latest`;
+const COMMAND = `echo ${DOCKER_PASSWORD} | docker login --username squizy --password-stdin && docker rm bios-uin -f && docker pull squizy/bios-uinril:latest && docker run -d --rm --name bios-uin -p 8000:80 --env-file ./.env squizy/bios-uinril:latest`;
 
 const webhook = new Webhooks({
   secret: process.env.WEBHOOK_SECRET
