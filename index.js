@@ -1,39 +1,39 @@
-const express = require('express');
-const { exec } = require('child_process');
-const { Webhook } = require('@ocktokit/webhooks');
-require('dotenv').config();
+import express, { json } from 'express';
+import { exec } from 'child_process';
+import { Webhooks } from '@octokit/webhooks';
 
 const app = express();
 
-app.use(express.json());
+app.use(json());
 
 const DOCKER_PASSWORD = process.env.DOCKER_PASSWORD;
 
 const COMMAND = `echo ${DOCKER_PASSWORD} | docker login --username squizy --password-stdin && docker rm bios-uin -f && docker pull squizy/bios-test:latest && docker run -d --rm --name bios-uin -p 8000:80 --env-file ./.env squizy/bios-test:latest`;
 
-const webhook = new Webhook({
+const webhook = new Webhooks({
   secret: process.env.WEBHOOK_SECRET
 });
 
+
 app.post('/webhook', async (req, res) => {
-  const timestmap = new Date();
-  console.log(`${timestmap}: webhook received`);
+  const timestamp = new Date();
+  console.log(`${timestamp}: webhook received`);
+  console.log(`${timestamp}: req.body: ${req.body}`);
 
   const signature = req.headers["x-hub-signature-256"];
-  const result = await webhook.verify(req.body, signature);
-  if (!result) {
-    console.log(`${timestmap}: invalid signature, this is signature from header ${signature}`);
+  const result = webhook.verify(req.body, signature);
+  if (!result) {console.log(`${timestamp}: invalid signature, this is signature from header ${signature}`);
     return res.status(401).send('Invalid signature');
   }
 
   exec(COMMAND, (error, stdout, stderr) => {
     if (error) {
-      console.error(`${timestmap}: Error restarting deployment: ${stderr}`);
+      console.error(`${timestamp}: Error restarting deployment: ${stderr}`);
       return res.status(500).send('Failed to restart deployment');
     }
-    console.log(`${timestmap}: System restart successfully: ${stdout}`)
+    console.log(`${timestamp}: System restart successfully: ${stdout}`)
     return res.status(200).send('system restart successfully');
   });
 });
 
-app.listen(3000, console.log('${new Date()}: running on port 3000'));
+app.listen(3000, console.log(`${new Date()}: running on port 3000`));
