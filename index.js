@@ -1,6 +1,8 @@
 import express, { json } from 'express';
 import { exec } from 'child_process';
 import { Webhooks } from '@octokit/webhooks';
+import { configDotenv } from 'dotenv';
+configDotenv()
 
 const app = express();
 
