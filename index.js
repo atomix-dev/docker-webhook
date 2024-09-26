@@ -2,6 +2,7 @@ import express, { json } from 'express';
 import { exec } from 'child_process';
 import { Webhooks } from '@octokit/webhooks';
 import { configDotenv } from 'dotenv';
+import transporter from './mailer';
 configDotenv()
 
 const app = express();
@@ -34,10 +35,31 @@ app.post('/webhook', async (req, res) => {
   exec(COMMAND, (error, stdout, stderr) => {
     if (error) {
       console.error(`${timestamp}: Error restarting deployment: ${stderr}`);
-      return res.status(500).send('Failed to restart deployment');
+      transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        subject: 'BIOS Restarting Deployment Status: Fail',
+        html: `
+          <h2>Restarting Fail</h2>
+          <hr>
+          <p>Webhook received successfully, but the restarting is failed</p>
+          <p>check server log for more info</p>
+        `
+      })
+      return
     }
     console.log(`${timestamp}: System restart successfully: ${stdout}`)
-    return res.status(200).send('system restart successfully');
+    transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
+      subject: 'BIOS Restarting Deployment Status: Success',
+      html: `
+        <h2>Restarting Success</h2>
+        <hr>
+        <p>System restart succesfully</p>
+      `
+    })
+    return
   });
 });
 
