@@ -27,6 +27,8 @@ app.post('/webhook', async (req, res) => {
   if (!result) {
     console.log(`${timestamp}: invalid signature, this is signature from header ${signature}`);
     return res.status(401).send('Invalid signature');
+  } else {
+    res.send(200)
   }
 
   exec(COMMAND, (error, stdout, stderr) => {
