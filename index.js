@@ -2,7 +2,7 @@ import express, { json } from 'express';
 import { exec } from 'child_process';
 import { Webhooks } from '@octokit/webhooks';
 import { configDotenv } from 'dotenv';
-import transporter from './mailer';
+import transporter from './mailer.js';
 configDotenv()
 
 const app = express();
