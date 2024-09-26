@@ -6,7 +6,7 @@ configDotenv()
 
 const app = express();
 
-app.use(json());
+app.use(express.json());
 
 const DOCKER_PASSWORD = process.env.DOCKER_PASSWORD;
 
@@ -23,8 +23,9 @@ app.post('/webhook', async (req, res) => {
   console.log(`${timestamp}: req.body: ${req.body}`);
 
   const signature = req.headers["x-hub-signature-256"];
-  const result = webhook.verify(req.body, signature);
-  if (!result) {console.log(`${timestamp}: invalid signature, this is signature from header ${signature}`);
+  const result = webhook.verify(JSON.stringify(req.body), signature);
+  if (!result) {
+    console.log(`${timestamp}: invalid signature, this is signature from header ${signature}`);
     return res.status(401).send('Invalid signature');
   }
 
