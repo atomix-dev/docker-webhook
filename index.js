@@ -49,16 +49,21 @@ app.post('/webhook', async (req, res) => {
       return
     }
     console.log(`${timestamp}: System restart successfully: ${stdout}`)
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER,
-      subject: 'BIOS Restarting Deployment Status: Success',
-      html: `
-        <h2>Restarting Success</h2>
-        <hr>
-        <p>System restart succesfully</p>
-      `
-    })
+    try {
+      const info = await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        subject: 'BIOS Restarting Deployment Status: Success',
+        html: `
+          <h2>Restarting Success</h2>
+          <hr>
+          <p>System restart succesfully</p>
+        `
+      })
+      console.log(`${timestamp}: Sending email success: `, info.messageId);
+    } catch (error) {
+      console.log(`${timestamp}: Sending email error: `, error);
+    }
     return
   });
 });
