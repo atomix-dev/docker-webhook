@@ -32,10 +32,10 @@ app.post('/webhook', async (req, res) => {
     res.send(200)
   }
 
-  exec(COMMAND, (error, stdout, stderr) => {
+  exec(COMMAND, async (error, stdout, stderr) => {
     if (error) {
       console.error(`${timestamp}: Error restarting deployment: ${stderr}`);
-      transporter.sendMail({
+      await transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER,
         subject: 'BIOS Restarting Deployment Status: Fail',
@@ -49,7 +49,7 @@ app.post('/webhook', async (req, res) => {
       return
     }
     console.log(`${timestamp}: System restart successfully: ${stdout}`)
-    transporter.sendMail({
+    await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_USER,
       subject: 'BIOS Restarting Deployment Status: Success',
